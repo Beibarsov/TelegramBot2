@@ -9,6 +9,7 @@ using Telegram.Bot.Extensions.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Microsoft.Extensions.Hosting;
+using TelegramBot2.Controllers;
 
 namespace TelegramBot2
 {
@@ -16,9 +17,19 @@ namespace TelegramBot2
     {
         private ITelegramBotClient _telegramClient;
 
-        public Bot(ITelegramBotClient telegramClient)
+        private TextMessageController _textMessageController;
+        private VoiceMessageController _voiceMessageController;
+        private DefaultMessageController _defaultMessageController;
+        private InlineKeyboardController _inlineKeyboardController;
+
+
+        public Bot(ITelegramBotClient telegramClient, TextMessageController textMessageController, VoiceMessageController voiceMessageController, DefaultMessageController defaultMessageController, InlineKeyboardController inlineKeyboardController)
         {
             _telegramClient = telegramClient;
+            _textMessageController = textMessageController;
+            _voiceMessageController = voiceMessageController;
+            _defaultMessageController = defaultMessageController;
+            _inlineKeyboardController = inlineKeyboardController;
         }
 
         async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
@@ -26,13 +37,25 @@ namespace TelegramBot2
             //  Обрабатываем нажатия на кнопки  из Telegram Bot API: https://core.telegram.org/bots/api#callbackquery
             if (update.Type == UpdateType.CallbackQuery)
             {
-                await _telegramClient.SendTextMessageAsync(update.Message.Chat.Id, "Вы нажали кнопку", cancellationToken: cancellationToken);
+                await _inlineKeyboardController.Handle(update.CallbackQuery, cancellationToken);
                 return;
             }
 
             // Обрабатываем входящие сообщения из Telegram Bot API: https://core.telegram.org/bots/api#message
             if (update.Type == UpdateType.Message)
             {
+                switch (update.Message!.Type)
+                {
+                    case MessageType.Text:
+                        await _textMessageController.Handle(update.Message, cancellationToken);
+                        return;  
+                    case MessageType.Voice:
+                        await _voiceMessageController.Handle(update.Message, cancellationToken);
+                        return;
+                    default:
+                        await _defaultMessageController.Handle(update.Message, cancellationToken);
+                        return;
+                }
                 await _telegramClient.SendTextMessageAsync(update.Message.Chat.Id, "Вы отправили сообщение " + update.Message.Text, cancellationToken: cancellationToken);
                 Console.WriteLine("Получено сообщение " + update.Message.Text);
                 return;
