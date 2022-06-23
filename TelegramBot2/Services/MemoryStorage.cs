@@ -8,7 +8,7 @@ using System.Collections.Concurrent;
 
 namespace TelegramBot2.Services
 {
-    internal class MemoryStorage : IStorage
+    public class MemoryStorage : IStorage
 
     {
 

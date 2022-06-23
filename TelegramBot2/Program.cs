@@ -23,6 +23,7 @@ namespace TelegramBot2
                 DownloadsFolder = "C:\\Telegram",
                 AudioFileName = "audio",
                 InputAudioFormat = "ogg",
+                OutputAudioFormat = "wav",
             };
         }
 
