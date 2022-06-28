@@ -29,5 +29,7 @@ namespace TelegramBot2.Configuration
         /// Формат аудио при загрузке
         /// </summary>
         public string OutputAudioFormat { get; set; }
+
+        public float InputAudioBitrate { get; set; }
     }
 }

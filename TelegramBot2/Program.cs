@@ -24,6 +24,7 @@ namespace TelegramBot2
                 AudioFileName = "audio",
                 InputAudioFormat = "ogg",
                 OutputAudioFormat = "wav",
+                InputAudioBitrate = 48000,
             };
         }
 

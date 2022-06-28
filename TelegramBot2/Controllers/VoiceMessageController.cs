@@ -35,8 +35,9 @@ namespace TelegramBot2.Controllers
 
 
             string userLanguageCode = _memoryStorage.GetSession(message.Chat.Id).LanguageCode;
-            _audioFileHandler.Process(userLanguageCode);
-            await _telegramClient.SendTextMessageAsync(message.Chat.Id, $"Сообщение конвертировано в .waw", cancellationToken: ct);
+            var result = _audioFileHandler.Process(userLanguageCode);
+            Console.WriteLine(result);
+            await _telegramClient.SendTextMessageAsync(message.Chat.Id, "Текст: " + result, cancellationToken: ct);
 
 
         }
