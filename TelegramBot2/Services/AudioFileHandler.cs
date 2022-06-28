@@ -24,6 +24,8 @@ namespace TelegramBot2.Services
         public async Task Download(string fileId, CancellationToken ct)
         {
             string inputAudioFilePath = Path.Combine(_appSettings.DownloadsFolder, $"{_appSettings.AudioFileName}.{_appSettings.InputAudioFormat}");
+            if (!Directory.Exists(_appSettings.DownloadsFolder))
+                Directory.CreateDirectory(_appSettings.DownloadsFolder);
 
             using (FileStream fs = File.Create(inputAudioFilePath))
             {
